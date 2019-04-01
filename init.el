@@ -51,7 +51,8 @@
 (use-package package-utils)
 
 ;; which-key minor mode
-(use-package which-key)
+(use-package which-key
+  :diminish which-key-mode)
 (which-key-mode)
 
 ;; comp(lete)any(thing)
