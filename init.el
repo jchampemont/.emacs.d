@@ -59,10 +59,29 @@
    company-idle-delay 0))
 (add-hook 'after-init-hook 'global-company-mode)
 
+;; ivy/counsel/swiper
+(use-package ivy
+  :diminish ivy-mode
+  :init
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  :config
+  (ivy-mode 1))
+(use-package counsel
+  :diminish counsel-mode
+  :config
+  (counsel-mode 1))
+(use-package swiper
+  :config)
+
 ;; scala dev
 (use-package ensime
   :ensure t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :init
+  (setq ensime-search-interface 'ivy)
+  (setq ensime-startup-notification nil))
 (add-to-list 'exec-path "/usr/local/bin") ;; add system path to exec path, for emacs to find sbt
 
 ;; https://magit.vc
