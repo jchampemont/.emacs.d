@@ -38,6 +38,9 @@
 ;; this is only needed once, near the top of the file
 (eval-when-compile (require 'use-package))
 
+;; diminish modes
+(use-package diminish)
+
 ;; https://github.com/bbatsov/solarized-emacs
 (use-package solarized-theme)
 (setq solarized-distinct-fringe-background t)
@@ -75,6 +78,24 @@
 (use-package swiper
   :config)
 
+;; projectile: project interaction library
+(use-package projectile
+  :diminish projectile-mode
+  :pin melpa-stable
+  :init
+  (setq projectile-completion-system 'ivy)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
+;; imenu index in a popup windows
+(use-package popup-imenu)
+
+;; https://magit.vc
+(use-package magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+
 ;; scala dev
 (use-package ensime
   :ensure t
@@ -83,10 +104,6 @@
   (setq ensime-search-interface 'ivy)
   (setq ensime-startup-notification nil))
 (add-to-list 'exec-path "/usr/local/bin") ;; add system path to exec path, for emacs to find sbt
-
-;; https://magit.vc
-(use-package magit)
-(global-set-key (kbd "C-x g") 'magit-status)
 
 ;; use a custom file
 (setq custom-file "~/.emacs.d/custom.el")
