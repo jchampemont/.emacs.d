@@ -51,6 +51,14 @@
 (use-package which-key)
 (which-key-mode)
 
+;; comp(lete)any(thing)
+(use-package company
+  :diminish company-mode
+  :init
+  (setq
+   company-idle-delay 0))
+(add-hook 'after-init-hook 'global-company-mode)
+
 ;; scala dev
 (use-package ensime
   :ensure t
