@@ -3,9 +3,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(global-page-break-lines-mode t)
  '(package-selected-packages
    (quote
-    (popup-imenu projectile diminish counsel ivy which-key use-package solarized-theme package-utils ensime))))
+    (dashboard popup-imenu projectile diminish counsel ivy which-key use-package solarized-theme package-utils ensime))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
