@@ -118,15 +118,6 @@
                         (registers . 5)))
 (setq dashboard-startup-banner 'logo)
 
-;; scala dev
-(use-package ensime
-  :ensure t
-  :pin melpa-stable
-  :init
-  (setq ensime-search-interface 'ivy)
-  (setq ensime-startup-notification nil))
-(add-to-list 'exec-path "/usr/local/bin") ;; add system path to exec path, for emacs to find sbt
-
 
 
 ;; use a custom file
