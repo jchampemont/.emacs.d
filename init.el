@@ -118,6 +118,8 @@
                         (registers . 5)))
 (setq dashboard-startup-banner 'logo)
 
+;; paren-mode
+(show-paren-mode 1)
 
 
 ;; use a custom file
