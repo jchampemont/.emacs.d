@@ -41,17 +41,18 @@
 
 ;; diminish modes: hide minor mode in the modeline
 (use-package diminish)
+(diminish 'abbrev-mode)
+(diminish 'eldoc-mode)
+(diminish 'auto-revert-mode)
 
 ;; page break lines: display horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [ and C-x ] to navigate back and forth.)
 (use-package page-break-lines
   :diminish page-break-lines-mode)
 (global-page-break-lines-mode)
 
-;; https://github.com/bbatsov/solarized-emacs Solarized (light) theme
+;; https://github.com/bbatsov/solarized-emacs Solarized (dark) theme
 (use-package solarized-theme)
-(setq solarized-distinct-fringe-background t)
-(setq solarized-high-contrast-mode-line t)
-(load-theme 'solarized-light t)
+(load-theme 'solarized-dark t)
 
 ;; to use package-utils-upgrade-all and more
 (use-package package-utils)
@@ -78,11 +79,14 @@
   (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
   :config
   (ivy-mode 1))
+
 ;; counsel: enhances default emacs features with ivy
+;; it remaps default emacs command to ivy enhanced version (counsel-*)
 (use-package counsel
   :diminish counsel-mode
   :config
   (counsel-mode 1))
+
 ;; swiper: ivy-backed isearch replacement
 (use-package swiper
   :config
@@ -120,6 +124,30 @@
 
 ;; paren-mode
 (show-paren-mode 1)
+(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+
+;; markdown-mode
+;; (use-package markdown-mode)
+
+;; treemacs
+;; (use-package treemacs)
+;; (use-package treemacs-projectile)
+
+;; flycheck
+;;(use-package flycheck)
+
+;; java-dev
+;;(use-package lsp-mode)
+;;(use-package company-lsp)
+;;(push 'company-lsp company-backends)
+;;(use-package lsp-ui)
+;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;;(use-package lsp-java :after lsp
+;;  :init
+;;  (setq lsp-java-save-action-organize-imports nil)
+;;  (setq lsp-java-vmargs (list "-javaagent:/Users/j.champemont/.emacs.d/lombok.jar" "-Xbootclasspath/a:/Users/j.champemont/.emacs.d/lombok.jar"))
+;;  :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
+;;(use-package protobuf-mode)
 
 
 ;; use a custom file
@@ -131,3 +159,25 @@
 ;; global keybindings
 (global-unset-key (kbd "C-z")) ;; unset C-z (which is hidding emacs)
 (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
+
+
+;; visual bell
+(defun mode-line-visual-bell ()
+  (setq visible-bell nil)
+  (setq ring-bell-function 'mode-line-visual-bell--flash))
+
+(defun mode-line-visual-bell--flash ()
+  (let ((frame (selected-frame)))
+    (invert-face 'header-line frame)
+    (invert-face 'header-line-highlight frame)
+    (invert-face 'mode-line frame)
+    (invert-face 'mode-line-inactive frame)
+    (run-with-timer
+     0.1 nil
+     #'(lambda (frame)
+         (invert-face 'header-line frame)
+         (invert-face 'header-line-highlight frame)
+         (invert-face 'mode-line frame)
+         (invert-face 'mode-line-inactive frame))
+     frame)))
+(mode-line-visual-bell)
