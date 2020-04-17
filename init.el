@@ -161,6 +161,9 @@
 (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
 
 
+;; more customization
+(tool-bar-mode 0)
+(menu-bar-mode 0)
 ;; visual bell
 (defun mode-line-visual-bell ()
   (setq visible-bell nil)
