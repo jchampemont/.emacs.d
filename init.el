@@ -126,6 +126,9 @@
 (show-paren-mode 1)
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 
+;; save place mode
+(save-place-mode 1)
+
 ;; markdown-mode
 ;; (use-package markdown-mode)
 
