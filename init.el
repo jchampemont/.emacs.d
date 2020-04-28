@@ -187,3 +187,4 @@
          (invert-face 'mode-line-inactive frame))
      frame)))
 (mode-line-visual-bell)
+(server-start)
