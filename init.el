@@ -130,7 +130,7 @@
 (save-place-mode 1)
 
 ;; markdown-mode
-;; (use-package markdown-mode)
+(use-package markdown-mode)
 
 ;; treemacs
 ;; (use-package treemacs)
@@ -187,4 +187,6 @@
          (invert-face 'mode-line-inactive frame))
      frame)))
 (mode-line-visual-bell)
+
+;; Start the server mode (to allow emacs-client)
 (server-start)
