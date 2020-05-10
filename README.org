@@ -233,11 +233,10 @@ Project interaction library
 Comp(lete) any(thing) is a completion engine.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package company
-  :init
-  (setq
-   company-idle-delay 0))
-(add-hook 'after-init-hook 'global-company-mode)
+  (use-package company
+    :ensure t
+    :hook (after-init . global-company-mode)
+    :custom (company-idle-delay 0))
 #+end_src
 *** popup imenu
 Displays file summary
