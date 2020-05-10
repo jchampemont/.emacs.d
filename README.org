@@ -238,6 +238,14 @@ Guess the identation rules from the style in the current file.
     :hook (c-mode-common . dtrt-indent-mode)
     :custom (dtrt-indent-verbosity 0))
 #+end_src
+*** syntactic close
+Close any syntactic element (=)]}= etc.)
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package syntactic-close
+    :ensure t
+    :bind (("]" . syntactic-close)))
+#+end_src
 ** Syntax
 *** markdown mode
 
