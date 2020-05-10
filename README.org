@@ -146,8 +146,39 @@ An extensible emacs startup screen
 (setq dashboard-startup-banner 'logo)
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
+*** Spell checking
+**** flyspell
+Disable the default flyspell keybindings.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq flyspell-use-meta-tab nil
+        flyspell-auto-correct-binding (kbd ""))
+#+end_src
+
+For programming modes, enable =flyspell-prog-mode= for spell checking in
+comments and strings.
+
+#+begin_src emacs-lisp :tangle yes
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+**** flyspell correct
+Correcting words with flyspell using ivy interface.
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package flyspell-correct-ivy
+    :ensure t
+    :bind (:map flyspell-mode-map
+                ("C-;" . flyspell-correct-wrapper)))
+#+end_src
+**** guess language
+#+begin_src emacs-lisp :tangle yes
+  (use-package guess-language
+    :ensure t
+    :custom (guess-language-languages '(en fr)))
+  (guess-language-mode 1)
+#+end_src
 ** org mode
-The built-in org-mode in emacs is outdated, install a newer one.
+The built-in org-mode in Emacs is outdated, install a newer one.
 
 + =org-startup-indented= :: Activate =org-indent-mode= at buffer startup.
 
