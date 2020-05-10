@@ -30,17 +30,12 @@ open.
   (add-hook 'server-switch-hook #'raise-frame)
 #+end_src
 * Variables
-
 #+begin_src emacs-lisp :tangle yes
 ;; global variables
 (setq
- inhibit-startup-screen t;; no startup screen
  make-backup-files nil;; no backup files - I use git everywhere
  create-lockfiles nil;; will no create lock files
- column-number-mode t;; will display the column number in the mode line
  scroll-error-top-bottom t;;scroll to the farthest possible position before signaling an error
- show-paren-mode t;; will display matching parenthesis when highlighting a parenthesis
- show-paren-delay 0.5;; show matching parenthesis after 0.5
  use-package-always-ensure t;;install package if not already present
  sentence-end-double-space nil;;end of sentence period should not be followed by two spaces
 )
@@ -188,6 +183,23 @@ Git frontend
 (use-package magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 #+end_src
+*** highlight-indent-guides
+Visually show the indentation levels.
+#+begin_src emacs-lisp :tangle yes
+(use-package highlight-indent-guides
+    :ensure t
+    :hook (prog-mode . highlight-indent-guides-mode)
+    :custom (highlight-indent-guides-method 'character)
+            (highlight-indent-guides-responsive 'top))
+#+end_src
+*** dtrt-indent
+Guess the identation rules from the style in the current file.
+#+begin_src emacs-lisp :tangle yes
+(use-package dtrt-indent
+    :ensure t
+    :hook (c-mode-common . dtrt-indent-mode)
+    :custom (dtrt-indent-verbosity 0))
+#+end_src
 ** Syntax
 *** markdown mode
 
@@ -248,13 +260,15 @@ Highlight matching parenthesis
 #+begin_src emacs-lisp :tangle yes
 ;; paren-mode
 (show-paren-mode 1)
+(setq show-paren-mode t)
+(setq show-paren-delay 0.5)
 (setq show-paren-style 'expression)
-(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 #+end_src
 ** save place mode
-Save location in files
+Remember the last cursor position in emacs.
 
 #+begin_src emacs-lisp :tangle yes
+(require 'saveplace)
 (save-place-mode 1)
 #+end_src
 * General customization
@@ -304,6 +318,14 @@ Highlight the current line
          (invert-face 'mode-line-inactive frame))
      frame)))
 (mode-line-visual-bell)
+#+end_src
+*** No startup screen
+#+begin_src emacs-lisp :tangle yes
+(setq inhibit-startup-screen t)
+#+end_src
+*** Display column number in the mode line
+#+begin_src emacs-lisp :tangle yes
+(setq column-number-mode t)
 #+end_src
 ** Change "yes or no" to "y or n"
 #+begin_src emacs-lisp :tangle yes
