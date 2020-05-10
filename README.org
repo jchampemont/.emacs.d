@@ -255,6 +255,16 @@ Git frontend
                 ("C-x M-g" . magit-file-popup))
     :hook (git-commit-mode . flyspell-mode))
 #+end_src
+*** diff hl
+Show the git status in the fringe.
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package diff-hl
+    :ensure t
+    :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :config (global-diff-hl-mode 1)
+            (diff-hl-flydiff-mode 1))
+#+end_src
 *** highlight-indent-guides
 Visually show the indentation levels.
 #+begin_src emacs-lisp :tangle yes
