@@ -146,7 +146,53 @@ An extensible emacs startup screen
 (setq dashboard-startup-banner 'logo)
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
+** org mode
+*** General
+The built-in org-mode in emacs is outdated, install a newer one.
+
++ =org-startup-indented= :: Activate =org-indent-mode= at buffer startup.
+
++ =org-archive-location= :: Archive items end up in the same file in the
+  =archive/= subdir.
+
++ =org-archive-mark-done= :: Mark the item as done when it is archived.
+
++ =org-M-RET-may-split-line= :: When pressing =M-RET= do not split the text at
+  point, but add an item after the current one.
+
++ =org-cycle-separator-lines= :: Make collapsed trees more compact by showing no
+  empty lines in between.
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package org
+      :ensure org-plus-contrib
+      :hook ((org-mode . auto-fill-mode)
+             (org-mode . flyspell-mode)
+             (org-mode . (lambda () (setq fill-column 80)))
+             (org-mode . turn-on-auto-fill))
+      :bind (:map global-map
+                   ("C-c a" . org-agenda))
+             (:map global-map
+                   ("C-c l" . org-store-link))
+             (:map org-mode-map
+                   ("C-c C-l" . org-insert-link))
+      :custom (org-log-done t)
+              (org-startup-indented t)
+              (org-archive-location "archive/$s::")
+              (org-archive-mark-done t)
+              (org-M-RET-may-split-line '((item . nil)))
+              (org-cycle-separator-lines 0))
+  (org-reload)
+#+end_src
+*** poly mode
+Edit code blocks in org-mode with poly mode.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package poly-org
+    :ensure t)
+#+end_src
 ** Programming
+**
 *** projectile
 Project interaction library
 
@@ -244,16 +290,6 @@ Just hide all minor modes
     :ensure t)
 #+end_src
 * Modes
-** org mode
-We don't require org-mode as it's already loaded by the =init.el= loading this file.
-#+begin_src emacs-lisp :tangle yes
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done t)
-(setq org-startup-indented t)
-(add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-#+end_src
 ** paren mode
 Highlight matching parenthesis
 
