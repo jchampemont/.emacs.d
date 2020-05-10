@@ -9,7 +9,6 @@
 This configuration is using [[http://orgmode.org/worg/org-contrib/babel/intro.html][org-babel]] to implement [[http://en.wikipedia.org/wiki/Literate_programming][Literate Programming]].
 
 (inspired by [[https://twitter.com/sachac][@sachac]]'s [[http://sach.ac/dotemacs][emacs configuration]].)
-
 * Server
 Start the emacs server already. So even when the rest of the
 configuration would fail, the server is running and =emacsclient= is
@@ -22,7 +21,6 @@ open.
   (server-start)
   (add-hook 'server-switch-hook #'raise-frame)
 #+end_src
-
 * Variables
 
 #+begin_src emacs-lisp :tangle yes
@@ -45,7 +43,6 @@ open.
  tab-width 4;;one tab = 4 spaces
  c-basic-offset 4);;basic indentation in Cc Mode
 #+end_src
-
 * Package initialization
 ** Add package sources
 
@@ -69,34 +66,7 @@ Additional repositories for packages.
 ;; this is only needed once, near the top of the file
 (eval-when-compile (require 'use-package))
 #+end_src
-
 * Packages
-** Visual customization
-*** Diminish
-Hides minor mode in the mode line
-
-#+begin_src emacs-lisp :tangle yes
-(use-package diminish)
-(diminish 'abbrev-mode)
-(diminish 'eldoc-mode)
-(diminish 'auto-revert-mode)
-#+end_src
-
-*** Page break lines
-Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [ and C-x ] to navigate back and forth.)
-
-#+begin_src emacs-lisp :tangle yes
-(use-package page-break-lines
-  :diminish page-break-lines-mode)
-(global-page-break-lines-mode)
-#+end_src
-
-*** Solarized theme
-Use solarized dark theme
-#+begin_src emacs-lisp :tangle yes
-(use-package solarized-theme)
-(load-theme 'solarized-dark t)
-#+end_src
 ** Misc
 *** Package utils
 Can be used to do =package-utils-upgrade-all= and more...
@@ -104,7 +74,6 @@ Can be used to do =package-utils-upgrade-all= and more...
 #+begin_src emacs-lisp :tangle yes
 (use-package package-utils)
 #+end_src
-
 *** Which key
 Which key is a minor mode that displays available keybindings.
 
@@ -113,7 +82,6 @@ Which key is a minor mode that displays available keybindings.
   :diminish which-key-mode)
 (which-key-mode)
 #+end_src
-
 ** Usability
 *** Ivy
 Ivy is a command completion engine.
@@ -138,7 +106,6 @@ enhanced versions (=counseul-*=).
   :config
   (counsel-mode 1))
 #+end_src
-
 *** Swiper
 ivy-backed isearch replacement
 
@@ -163,7 +130,6 @@ Display a nice dashboard at startup
 (setq dashboard-startup-banner 'logo)
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
-
 ** Programming
 *** Projectile
 Project interaction library
@@ -190,14 +156,12 @@ Comp(lete) any(thing) is a completion engine.
    company-idle-delay 0))
 (add-hook 'after-init-hook 'global-company-mode)
 #+end_src
-
 *** Popup imenu
 Displays file summary
 
 #+begin_src emacs-lisp :tangle yes
 (use-package popup-imenu)
 #+end_src
-
 *** Magit
 git frontend
 
@@ -205,17 +169,44 @@ git frontend
 (use-package magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 #+end_src
-
-* Modes
-** Org mode
+** Visual customization
+*** Solarized theme
+Use solarized dark theme
+#+begin_src emacs-lisp :tangle yes
+(use-package solarized-theme)
+(load-theme 'solarized-dark t)
+#+end_src
+*** Page break lines
+Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [
+and C-x ] to navigate back and forth.)
 
 #+begin_src emacs-lisp :tangle yes
-(require 'org)
+(use-package page-break-lines
+  :diminish page-break-lines-mode)
+(global-page-break-lines-mode)
+#+end_src
+*** Diminish
+Hides minor mode in the mode line
+
+#+begin_src emacs-lisp :tangle yes
+(use-package diminish)
+(diminish 'abbrev-mode)
+(diminish 'eldoc-mode)
+(diminish 'auto-revert-mode)
+;; auto-fill-mode is named by "auto-fill-function"
+(diminish 'auto-fill-function)
+(diminish 'org-indent-mode)
+#+end_src
+* Modes
+** Org mode
+We don't require org-mode as it's already loaded by the =init.el= loading this file.
+#+begin_src emacs-lisp :tangle yes
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
+(add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+end_src
-
 ** Paren mode
 Highlight matching parenthesis
 
@@ -224,27 +215,23 @@ Highlight matching parenthesis
 (show-paren-mode 1)
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 #+end_src
-
 ** Save place mode
 Save location in files
 
 #+begin_src emacs-lisp :tangle yes
 (save-place-mode 1)
 #+end_src
-
 ** Markdown mode
 
 #+begin_src emacs-lisp :tangle yes
 (use-package markdown-mode)
 #+end_src
-
 ** Yaml mode
 
 #+begin_src emacs-lisp :tangle yes
 (use-package yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 #+end_src
-
 * General customization
 ** Custom file
 Use a custom file
@@ -253,14 +240,12 @@ Use a custom file
 (setq custom-file "~/.emacs.d/custom.el")
 (load-file custom-file)
 #+end_src
-
 ** Keybindings
 
 #+begin_src emacs-lisp :tangle yes
 (global-unset-key (kbd "C-z")) ;; unset C-z (which is hidding emacs)
 (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
 #+end_src
-
 ** Visual
 Remove tool bar and menu bar
 #+begin_src emacs-lisp :tangle yes
@@ -290,7 +275,6 @@ Replace sound bell by visual bell
      frame)))
 (mode-line-visual-bell)
 #+end_src
-
 * Disabled stuff
 ** Treemacs
 File tree view
@@ -299,14 +283,12 @@ File tree view
 (use-package treemacs)
 (use-package treemacs-projectile)
 #+end_src
-
 ** Flycheck
 Syntax checking
 
 #+begin_src emacs-lisp :tangle no
 (use-package flycheck)
 #+end_src
-
 ** Java development
 
 #+begin_src emacs-lisp :tangle no
@@ -320,4 +302,3 @@ Syntax checking
   (setq lsp-java-save-action-organize-imports nil)
   :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
 #+end_src
-
