@@ -7,9 +7,12 @@ README.el
 # installed packages
 /elpa
 
+# variable files
+var/
+
 # other
 /auto-save-list
-custom.el
+etc/custom.el
 recentf
 projectile-bookmarks.eld
 places

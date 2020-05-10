@@ -9,7 +9,15 @@
 This configuration is using [[http://orgmode.org/worg/org-contrib/babel/intro.html][org-babel]] to implement [[http://en.wikipedia.org/wiki/Literate_programming][Literate Programming]].
 
 (inspired by [[https://twitter.com/sachac][@sachac]]'s [[http://sach.ac/dotemacs][emacs configuration]].)
-* Server
+
+* Preparation
+** Backtrace
+Show a backtrace when error happens while loading this file.
+
+#+begin_src emacs-lisp :tangle yes
+(setq debug-on-error t)
+#+end_src
+** Server
 Start the emacs server already. So even when the rest of the
 configuration would fail, the server is running and =emacsclient= is
 usable.
@@ -57,38 +65,52 @@ Additional repositories for packages.
                     ("melpa-stable" . "http://stable.melpa.org/packages/"))
  package-archive-priorities '(("melpa-stable" . 1)))
 
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-;; this is only needed once, near the top of the file
-(eval-when-compile (require 'use-package))
+(unless (and (boundp 'package-archive-contents) package-archive-contents)
+  (package-initialize)
+  (package-refresh-contents))
 #+end_src
 * Packages
 ** Misc
-*** Package utils
-Can be used to do =package-utils-upgrade-all= and more...
+*** use-package
+Use-package is a wrapper around the built-in package.el of emacs. It helps you
+to tidy your emacs, by combining everything for one package.
+
+#+begin_src emacs-lisp :tangle yes
+(package-install 'use-package)
+
+(require 'use-package)
+#+end_src
+*** package-utils
+Provides various functions such as =package-utils-upgrade-all= and more... (all
+prefixed by =package-utils-*=)
 
 #+begin_src emacs-lisp :tangle yes
 (use-package package-utils)
 #+end_src
-*** Which key
-Which key is a minor mode that displays available keybindings.
+*** no-littering
+Keeps =.emacs.d= clean
 
 #+begin_src emacs-lisp :tangle yes
-(use-package which-key
-  :diminish which-key-mode)
+(use-package no-littering
+  :ensure t
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
+#+end_src
+*** which-key
+Displays available keybindings in popup.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package which-key)
 (which-key-mode)
 #+end_src
 ** Usability
-*** Ivy
+*** ivy
 Ivy is a command completion engine.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package ivy
-  :diminish ivy-mode
   :init
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
@@ -96,26 +118,25 @@ Ivy is a command completion engine.
   :config
   (ivy-mode 1))
 #+end_src
-*** Counsel
-Enhances default emacs features with ivy and remaps default emacs command to ivy
-enhanced versions (=counseul-*=).
+*** counsel
+Enhances default emacs features with [[*ivy][ivy]] and remaps default emacs command to ivy
+enhanced versions (=counsel-*=).
 
 #+begin_src emacs-lisp :tangle yes
 (use-package counsel
-  :diminish counsel-mode
   :config
   (counsel-mode 1))
 #+end_src
-*** Swiper
-ivy-backed isearch replacement
+*** swiper
+[[*ivy][ivy]]-backed isearch replacement
 
 #+begin_src emacs-lisp :tangle yes
 (use-package swiper
   :config
   (global-set-key "\C-s" 'swiper))
 #+end_src
-*** Dashboard
-Display a nice dashboard at startup
+*** dashboard
+An extensible emacs startup screen
 
 #+begin_src emacs-lisp :tangle yes
 (use-package dashboard
@@ -131,12 +152,11 @@ Display a nice dashboard at startup
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
 ** Programming
-*** Projectile
+*** projectile
 Project interaction library
 
 #+begin_src emacs-lisp :tangle yes
 (use-package projectile
-  :diminish projectile-mode
   :pin melpa-stable
   :init
   (setq projectile-completion-system 'ivy)
@@ -145,99 +165,105 @@ Project interaction library
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 #+end_src
-*** Company mode
+*** company mode
 Comp(lete) any(thing) is a completion engine.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package company
-  :diminish company-mode
   :init
   (setq
    company-idle-delay 0))
 (add-hook 'after-init-hook 'global-company-mode)
 #+end_src
-*** Popup imenu
+*** popup imenu
 Displays file summary
 
 #+begin_src emacs-lisp :tangle yes
 (use-package popup-imenu)
 #+end_src
-*** Magit
-git frontend
+*** magit
+Git frontend
 
 #+begin_src emacs-lisp :tangle yes
 (use-package magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 #+end_src
+** Syntax
+*** markdown mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package markdown-mode)
+#+end_src
+*** yaml mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
+#+end_src
 ** Visual customization
-*** Solarized theme
+*** solarized theme
 Use solarized dark theme
 #+begin_src emacs-lisp :tangle yes
 (use-package solarized-theme)
 (load-theme 'solarized-dark t)
 #+end_src
-*** Page break lines
+*** page break lines
 Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [
 and C-x ] to navigate back and forth.)
 
 #+begin_src emacs-lisp :tangle yes
-(use-package page-break-lines
-  :diminish page-break-lines-mode)
+(use-package page-break-lines)
 (global-page-break-lines-mode)
 #+end_src
-*** Diminish
-Hides minor mode in the mode line
+*** minions
+Just hide all minor modes
 
 #+begin_src emacs-lisp :tangle yes
-(use-package diminish)
-(diminish 'abbrev-mode)
-(diminish 'eldoc-mode)
-(diminish 'auto-revert-mode)
-;; auto-fill-mode is named by "auto-fill-function"
-(diminish 'auto-fill-function)
-(diminish 'org-indent-mode)
+(use-package minions
+    :ensure t
+    :custom (minions-direct '(projectile-mode))
+    :config (minions-mode 1))
+#+end_src
+*** all the icons
+
+#+begin_src emacs-lisp :tangle yes
+(use-package all-the-icons
+    :disabled
+    :ensure t)
 #+end_src
 * Modes
-** Org mode
+** org mode
 We don't require org-mode as it's already loaded by the =init.el= loading this file.
 #+begin_src emacs-lisp :tangle yes
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
+(setq org-startup-indented t)
 (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+end_src
-** Paren mode
+** paren mode
 Highlight matching parenthesis
 
 #+begin_src emacs-lisp :tangle yes
 ;; paren-mode
 (show-paren-mode 1)
+(setq show-paren-style 'expression)
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 #+end_src
-** Save place mode
+** save place mode
 Save location in files
 
 #+begin_src emacs-lisp :tangle yes
 (save-place-mode 1)
-#+end_src
-** Markdown mode
-
-#+begin_src emacs-lisp :tangle yes
-(use-package markdown-mode)
-#+end_src
-** Yaml mode
-
-#+begin_src emacs-lisp :tangle yes
-(use-package yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 #+end_src
 * General customization
 ** Custom file
 Use a custom file
 
 #+begin_src emacs-lisp :tangle yes
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file
+    (no-littering-expand-etc-file-name "custom.el"))
 (load-file custom-file)
 #+end_src
 ** Keybindings
@@ -247,13 +273,17 @@ Use a custom file
 (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
 #+end_src
 ** Visual
-Remove tool bar and menu bar
+*** Remove tool bar and menu bar
 #+begin_src emacs-lisp :tangle yes
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 #+end_src
-
-Replace sound bell by visual bell
+*** Highlight line
+Highlight the current line
+#+begin_src emacs-lisp :tangle yes
+(global-hl-line-mode 1)
+#+end_src
+*** Replace sound bell by visual bell
 #+begin_src emacs-lisp :tangle yes
 (defun mode-line-visual-bell ()
   (setq visible-bell nil)
@@ -275,16 +305,30 @@ Replace sound bell by visual bell
      frame)))
 (mode-line-visual-bell)
 #+end_src
+** Change "yes or no" to "y or n"
+#+begin_src emacs-lisp :tangle yes
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+** Confirm kill Emacs
+#+begin_src emacs-lisp :tangle yes
+(setq confirm-kill-emacs 'y-or-n-p)
+#+end_src
+** Encoding
+#+begin_src emacs-lisp :tangle yes
+(setq-default buffer-file-coding-system 'utf-8)
+(setenv "LANG" "en_fr.UTF-8")
+(prefer-coding-system 'utf-8)
+#+end_src
 * Disabled stuff
 Stuff below is disabled (=:tangle no=).
-** Treemacs
+** treemacs
 File tree view
 
 #+begin_src emacs-lisp :tangle no
 (use-package treemacs)
 (use-package treemacs-projectile)
 #+end_src
-** Flycheck
+** flycheck
 Syntax checking
 
 #+begin_src emacs-lisp :tangle no
