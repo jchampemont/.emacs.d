@@ -147,7 +147,6 @@ An extensible emacs startup screen
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
 ** org mode
-*** General
 The built-in org-mode in emacs is outdated, install a newer one.
 
 + =org-startup-indented= :: Activate =org-indent-mode= at buffer startup.
@@ -183,13 +182,6 @@ The built-in org-mode in emacs is outdated, install a newer one.
               (org-M-RET-may-split-line '((item . nil)))
               (org-cycle-separator-lines 0))
   (org-reload)
-#+end_src
-*** poly mode
-Edit code blocks in org-mode with poly mode.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package poly-org
-    :ensure t)
 #+end_src
 ** Programming
 *** projectile
