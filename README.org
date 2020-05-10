@@ -265,6 +265,18 @@ Show the git status in the fringe.
     :config (global-diff-hl-mode 1)
             (diff-hl-flydiff-mode 1))
 #+end_src
+*** git link
+Add package to get the GitHub/Bitbucket/GitLab/... URL for the current buffer
+location.
+
++ =git-link-use-commit= :: Use the latests commit's hash in the link instead of
+  the branch name.
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package git-link
+    :ensure t
+    :custom (git-link-use-commit nil))
+#+end_src
 *** highlight-indent-guides
 Visually show the indentation levels.
 #+begin_src emacs-lisp :tangle yes
