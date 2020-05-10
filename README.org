@@ -1,0 +1,323 @@
+#+TITLE:    jchampemont's Emacs configuration
+#+AUTHOR:   Jean Champémont
+#+KEYWORDS: emacs config
+#+OPTIONS:  toc: 4 h:4 ':t
+#+STARTUP:  showall
+
+* About this file
+
+This configuration is using [[http://orgmode.org/worg/org-contrib/babel/intro.html][org-babel]] to implement [[http://en.wikipedia.org/wiki/Literate_programming][Literate Programming]].
+
+(inspired by [[https://twitter.com/sachac][@sachac]]'s [[http://sach.ac/dotemacs][emacs configuration]].)
+
+* Server
+Start the emacs server already. So even when the rest of the
+configuration would fail, the server is running and =emacsclient= is
+usable.
+
+We also configure the server to raise frame on foreground when they
+open.
+
+#+begin_src emacs-lisp :tangle yes
+  (server-start)
+  (add-hook 'server-switch-hook #'raise-frame)
+#+end_src
+
+* Variables
+
+#+begin_src emacs-lisp :tangle yes
+;; global variables
+(setq
+ inhibit-startup-screen t;; no startup screen
+ make-backup-files nil;; no backup files - I use git everywhere
+ create-lockfiles nil;; will no create lock files
+ column-number-mode t;; will display the column number in the mode line
+ scroll-error-top-bottom t;;scroll to the farthest possible position before signaling an error
+ show-paren-mode t;; will display matching parenthesis when highlighting a parenthesis
+ show-paren-delay 0.5;; show matching parenthesis after 0.5
+ use-package-always-ensure t;;install package if not already present
+ sentence-end-double-space nil;;end of sentence period should not be followed by two spaces
+)
+
+;; buffer local variables
+(setq-default
+ indent-tabs-mode nil;;don't use tabs for indentation
+ tab-width 4;;one tab = 4 spaces
+ c-basic-offset 4);;basic indentation in Cc Mode
+#+end_src
+
+* Package initialization
+** Add package sources
+
+Additional repositories for packages.
+
+#+begin_src emacs-lisp :tangle yes
+(require 'package)
+(setq
+ package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                    ("org" . "http://orgmode.org/elpa/")
+                    ("melpa" . "http://melpa.org/packages/")
+                    ("melpa-stable" . "http://stable.melpa.org/packages/"))
+ package-archive-priorities '(("melpa-stable" . 1)))
+
+(package-initialize)
+
+(when (not package-archive-contents)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; this is only needed once, near the top of the file
+(eval-when-compile (require 'use-package))
+#+end_src
+
+* Packages
+** Visual customization
+*** Diminish
+Hides minor mode in the mode line
+
+#+begin_src emacs-lisp :tangle yes
+(use-package diminish)
+(diminish 'abbrev-mode)
+(diminish 'eldoc-mode)
+(diminish 'auto-revert-mode)
+#+end_src
+
+*** Page break lines
+Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [ and C-x ] to navigate back and forth.)
+
+#+begin_src emacs-lisp :tangle yes
+(use-package page-break-lines
+  :diminish page-break-lines-mode)
+(global-page-break-lines-mode)
+#+end_src
+
+*** Solarized theme
+Use solarized dark theme
+#+begin_src emacs-lisp :tangle yes
+(use-package solarized-theme)
+(load-theme 'solarized-dark t)
+#+end_src
+** Misc
+*** Package utils
+Can be used to do =package-utils-upgrade-all= and more...
+
+#+begin_src emacs-lisp :tangle yes
+(use-package package-utils)
+#+end_src
+
+*** Which key
+Which key is a minor mode that displays available keybindings.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package which-key
+  :diminish which-key-mode)
+(which-key-mode)
+#+end_src
+
+** Usability
+*** Ivy
+Ivy is a command completion engine.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package ivy
+  :diminish ivy-mode
+  :init
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  :config
+  (ivy-mode 1))
+#+end_src
+*** Counsel
+Enhances default emacs features with ivy and remaps default emacs command to ivy
+enhanced versions (=counseul-*=).
+
+#+begin_src emacs-lisp :tangle yes
+(use-package counsel
+  :diminish counsel-mode
+  :config
+  (counsel-mode 1))
+#+end_src
+
+*** Swiper
+ivy-backed isearch replacement
+
+#+begin_src emacs-lisp :tangle yes
+(use-package swiper
+  :config
+  (global-set-key "\C-s" 'swiper))
+#+end_src
+*** Dashboard
+Display a nice dashboard at startup
+
+#+begin_src emacs-lisp :tangle yes
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+(setq dashboard-items '((recents  . 5)
+                        (bookmarks . 3)
+                        (projects . 5)
+                        (agenda . 5)
+                        (registers . 5)))
+(setq dashboard-startup-banner 'logo)
+(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+#+end_src
+
+** Programming
+*** Projectile
+Project interaction library
+
+#+begin_src emacs-lisp :tangle yes
+(use-package projectile
+  :diminish projectile-mode
+  :pin melpa-stable
+  :init
+  (setq projectile-completion-system 'ivy)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+#+end_src
+*** Company mode
+Comp(lete) any(thing) is a completion engine.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package company
+  :diminish company-mode
+  :init
+  (setq
+   company-idle-delay 0))
+(add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+
+*** Popup imenu
+Displays file summary
+
+#+begin_src emacs-lisp :tangle yes
+(use-package popup-imenu)
+#+end_src
+
+*** Magit
+git frontend
+
+#+begin_src emacs-lisp :tangle yes
+(use-package magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+#+end_src
+
+* Modes
+** Org mode
+
+#+begin_src emacs-lisp :tangle yes
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+#+end_src
+
+** Paren mode
+Highlight matching parenthesis
+
+#+begin_src emacs-lisp :tangle yes
+;; paren-mode
+(show-paren-mode 1)
+(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+#+end_src
+
+** Save place mode
+Save location in files
+
+#+begin_src emacs-lisp :tangle yes
+(save-place-mode 1)
+#+end_src
+
+** Markdown mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package markdown-mode)
+#+end_src
+
+** Yaml mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
+#+end_src
+
+* General customization
+** Custom file
+Use a custom file
+
+#+begin_src emacs-lisp :tangle yes
+(setq custom-file "~/.emacs.d/custom.el")
+(load-file custom-file)
+#+end_src
+
+** Keybindings
+
+#+begin_src emacs-lisp :tangle yes
+(global-unset-key (kbd "C-z")) ;; unset C-z (which is hidding emacs)
+(global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
+#+end_src
+
+** Visual
+Remove tool bar and menu bar
+#+begin_src emacs-lisp :tangle yes
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+#+end_src
+
+Replace sound bell by visual bell
+#+begin_src emacs-lisp :tangle yes
+(defun mode-line-visual-bell ()
+  (setq visible-bell nil)
+  (setq ring-bell-function 'mode-line-visual-bell--flash))
+
+(defun mode-line-visual-bell--flash ()
+  (let ((frame (selected-frame)))
+    (invert-face 'header-line frame)
+    (invert-face 'header-line-highlight frame)
+    (invert-face 'mode-line frame)
+    (invert-face 'mode-line-inactive frame)
+    (run-with-timer
+     0.1 nil
+     #'(lambda (frame)
+         (invert-face 'header-line frame)
+         (invert-face 'header-line-highlight frame)
+         (invert-face 'mode-line frame)
+         (invert-face 'mode-line-inactive frame))
+     frame)))
+(mode-line-visual-bell)
+#+end_src
+
+* Disabled stuff
+** Treemacs
+File tree view
+
+#+begin_src emacs-lisp :tangle no
+(use-package treemacs)
+(use-package treemacs-projectile)
+#+end_src
+
+** Flycheck
+Syntax checking
+
+#+begin_src emacs-lisp :tangle no
+(use-package flycheck)
+#+end_src
+
+** Java development
+
+#+begin_src emacs-lisp :tangle no
+(use-package lsp-mode)
+(use-package company-lsp)
+(push 'company-lsp company-backends)
+(use-package lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(use-package lsp-java :after lsp
+  :init
+  (setq lsp-java-save-action-organize-imports nil)
+  :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
+#+end_src
+

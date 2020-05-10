@@ -1,6 +1,16 @@
-.cache
-recentf
-/auto-save-list
+# byte compiled files
+*.elc
+
+# org-babel output
+README.el
+
+# installed packages
 /elpa
+
+# other
+/auto-save-list
+custom.el
+recentf
 projectile-bookmarks.eld
 places
+projectile.cache
