@@ -248,8 +248,12 @@ Displays file summary
 Git frontend
 
 #+begin_src emacs-lisp :tangle yes
-(use-package magit)
-(global-set-key (kbd "C-x g") 'magit-status)
+  (use-package magit
+    :ensure t
+    :bind (:map global-map
+                ("C-x g" . magit-status)
+                ("C-x M-g" . magit-file-popup))
+    :hook (git-commit-mode . flyspell-mode))
 #+end_src
 *** highlight-indent-guides
 Visually show the indentation levels.
