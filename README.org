@@ -344,7 +344,7 @@ Highlight the current line
 ** Trailing whitespace
 Automatically remove trailing whitespace when saving a file.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 * Disabled stuff
