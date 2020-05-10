@@ -276,6 +276,7 @@ Replace sound bell by visual bell
 (mode-line-visual-bell)
 #+end_src
 * Disabled stuff
+Stuff below is disabled (=:tangle no=).
 ** Treemacs
 File tree view
 
