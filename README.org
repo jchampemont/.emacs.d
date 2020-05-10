@@ -192,19 +192,19 @@ Edit code blocks in org-mode with poly mode.
     :ensure t)
 #+end_src
 ** Programming
-**
 *** projectile
 Project interaction library
 
 #+begin_src emacs-lisp :tangle yes
-(use-package projectile
-  :pin melpa-stable
-  :init
-  (setq projectile-completion-system 'ivy)
-  :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
+  (use-package projectile
+    :ensure t
+    :bind (:map projectile-mode-map
+                ("C-c p" . projectile-command-map))
+    :custom (projectile-enable-caching t)
+            (projectile-completion-system 'ivy)
+            (projectile-enable-idle-timer nil)
+            (projectile-mode-line-prefix "")
+    :config (projectile-global-mode))
 #+end_src
 *** company mode
 Comp(lete) any(thing) is a completion engine.
