@@ -5,17 +5,15 @@
 #+STARTUP:  showall
 
 * About this file
-
 This configuration is using [[http://orgmode.org/worg/org-contrib/babel/intro.html][org-babel]] to implement [[http://en.wikipedia.org/wiki/Literate_programming][Literate Programming]].
 
 (inspired by [[https://twitter.com/sachac][@sachac]]'s [[http://sach.ac/dotemacs][emacs configuration]].)
-
 * Preparation
-** Backtrace
-Show a backtrace when error happens while loading this file.
+** Back-trace
+Show a back-trace when error happens while loading this file.
 
 #+begin_src emacs-lisp :tangle yes
-(setq debug-on-error t)
+  (setq debug-on-error t)
 #+end_src
 ** Server
 Start the emacs server already. So even when the rest of the
@@ -31,38 +29,35 @@ open.
 #+end_src
 * Variables
 #+begin_src emacs-lisp :tangle yes
-;; global variables
-(setq
- make-backup-files nil;; no backup files - I use git everywhere
- create-lockfiles nil;; will no create lock files
- scroll-error-top-bottom t;;scroll to the farthest possible position before signaling an error
- use-package-always-ensure t;;install package if not already present
- sentence-end-double-space nil;;end of sentence period should not be followed by two spaces
-)
+  (setq
+   make-backup-files nil;; no backup files - I use git everywhere
+   create-lockfiles nil;; will no create lock files
+   scroll-error-top-bottom t;;scroll to the farthest possible position before signaling an error
+   use-package-always-ensure t;;install package if not already present
+   sentence-end-double-space nil;;end of sentence period should not be followed by two spaces
+   )
 
-;; buffer local variables
-(setq-default
- indent-tabs-mode nil;;don't use tabs for indentation
- tab-width 4;;one tab = 4 spaces
- c-basic-offset 4);;basic indentation in Cc Mode
+  (setq-default
+   indent-tabs-mode nil;;don't use tabs for indentation
+   tab-width 4;;one tab = 4 spaces
+   c-basic-offset 4);;basic indentation in Cc Mode
 #+end_src
 * Package initialization
 ** Add package sources
-
 Additional repositories for packages.
 
 #+begin_src emacs-lisp :tangle yes
-(require 'package)
-(setq
- package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                    ("org" . "http://orgmode.org/elpa/")
-                    ("melpa" . "http://melpa.org/packages/")
-                    ("melpa-stable" . "http://stable.melpa.org/packages/"))
- package-archive-priorities '(("melpa-stable" . 1)))
+  (require 'package)
+  (setq
+   package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                      ("org" . "http://orgmode.org/elpa/")
+                      ("melpa" . "http://melpa.org/packages/")
+                      ("melpa-stable" . "http://stable.melpa.org/packages/"))
+   package-archive-priorities '(("melpa-stable" . 1)))
 
-(unless (and (boundp 'package-archive-contents) package-archive-contents)
-  (package-initialize)
-  (package-refresh-contents))
+  (unless (and (boundp 'package-archive-contents) package-archive-contents)
+    (package-initialize)
+    (package-refresh-contents))
 #+end_src
 * Packages
 ** Misc
@@ -71,80 +66,78 @@ Use-package is a wrapper around the built-in package.el of emacs. It helps you
 to tidy your emacs, by combining everything for one package.
 
 #+begin_src emacs-lisp :tangle yes
-(package-install 'use-package)
-
-(require 'use-package)
+  (package-install 'use-package)
+  (require 'use-package)
 #+end_src
 *** package-utils
 Provides various functions such as =package-utils-upgrade-all= and more... (all
 prefixed by =package-utils-*=)
 
 #+begin_src emacs-lisp :tangle yes
-(use-package package-utils)
+  (use-package package-utils)
 #+end_src
 *** no-littering
 Keeps =.emacs.d= clean
 
 #+begin_src emacs-lisp :tangle yes
-(use-package no-littering
-  :ensure t
-  :config
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
+  (use-package no-littering
+    :ensure t
+    :config
+    (require 'recentf)
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory))
 #+end_src
 *** which-key
 Displays available keybindings in popup.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package which-key)
-(which-key-mode)
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
 #+end_src
 ** Usability
 *** ivy
 Ivy is a command completion engine.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package ivy
-  :init
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
-  :config
-  (ivy-mode 1))
+  (use-package ivy
+    :ensure t
+    :custom (ivy-use-virtual-buffers t)
+            (enable-recursive-minibuffers t)
+            (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+    :config (ivy-mode 1))
 #+end_src
 *** counsel
 Enhances default emacs features with [[*ivy][ivy]] and remaps default emacs command to ivy
 enhanced versions (=counsel-*=).
 
 #+begin_src emacs-lisp :tangle yes
-(use-package counsel
-  :config
-  (counsel-mode 1))
+  (use-package counsel
+    :ensure t
+    :config (counsel-mode 1))
 #+end_src
 *** swiper
 [[*ivy][ivy]]-backed isearch replacement
 
 #+begin_src emacs-lisp :tangle yes
-(use-package swiper
-  :config
-  (global-set-key "\C-s" 'swiper))
+  (use-package swiper
+    :ensure t
+    :config (global-set-key "\C-s" 'swiper))
 #+end_src
 *** dashboard
 An extensible emacs startup screen
 
 #+begin_src emacs-lisp :tangle yes
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-(setq dashboard-items '((recents  . 5)
-                        (bookmarks . 3)
-                        (projects . 5)
-                        (agenda . 5)
-                        (registers . 5)))
-(setq dashboard-startup-banner 'logo)
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (use-package dashboard
+    :ensure t
+    :custom (dashboard-items '((recents  . 5)
+                               (bookmarks . 3)
+                               (projects . 5)
+                               (agenda . 5)
+                               (registers . 5)))
+            (dashboard-startup-banner 'logo)
+            (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+    :config (dashboard-setup-startup-hook))
 #+end_src
 *** Spell checking
 **** flyspell
@@ -195,25 +188,25 @@ The built-in org-mode in Emacs is outdated, install a newer one.
 
 #+begin_src emacs-lisp :tangle yes
   (use-package org
-      :ensure org-plus-contrib
-      :hook ((org-mode . auto-fill-mode)
-             (org-mode . flyspell-mode)
-             (org-mode . (lambda () (setq fill-column 80)))
-             (org-mode . turn-on-auto-fill))
-      :bind (:map global-map
-                   ("C-c a" . org-agenda))
-             (:map global-map
-                   ("C-c l" . org-store-link))
-             (:map org-mode-map
-                   ("C-c C-l" . org-insert-link))
-      :custom (org-log-done t)
-              (org-startup-indented t)
-              (org-archive-location "archive/$s::")
-              (org-archive-mark-done t)
-              (org-M-RET-may-split-line '((item . nil)))
-              (org-cycle-separator-lines 0))
+    :ensure org-plus-contrib
+    :hook ((org-mode . auto-fill-mode)
+           (org-mode . flyspell-mode)
+           (org-mode . (lambda () (setq fill-column 80)))
+           (org-mode . turn-on-auto-fill))
+    :bind (:map global-map
+                ("C-c a" . org-agenda))
+          (:map global-map
+                ("C-c l" . org-store-link))
+          (:map org-mode-map
+                ("C-c C-l" . org-insert-link))
+    :custom  (org-log-done t)
+             (org-startup-indented t)
+             (org-archive-location "archive/$s::")
+             (org-archive-mark-done t)
+             (org-M-RET-may-split-line '((item . nil)))
+         (org-cycle-separator-lines 0))
   (org-reload)
-#+end_src
+#+End_src
 ** Programming
 *** projectile
 Project interaction library
@@ -223,10 +216,10 @@ Project interaction library
     :ensure t
     :bind (:map projectile-mode-map
                 ("C-c p" . projectile-command-map))
-    :custom (projectile-enable-caching t)
-            (projectile-completion-system 'ivy)
-            (projectile-enable-idle-timer nil)
-            (projectile-mode-line-prefix "")
+    :custom ((projectile-enable-caching t)
+             (projectile-completion-system 'ivy)
+             (projectile-enable-idle-timer nil)
+             (projectile-mode-line-prefix ""))
     :config (projectile-global-mode))
 #+end_src
 *** company mode
@@ -242,7 +235,8 @@ Comp(lete) any(thing) is a completion engine.
 Displays file summary
 
 #+begin_src emacs-lisp :tangle yes
-(use-package popup-imenu)
+  (use-package popup-imenu
+    :ensure t)
 #+end_src
 *** magit
 Git frontend
@@ -280,7 +274,7 @@ location.
 *** highlight-indent-guides
 Visually show the indentation levels.
 #+begin_src emacs-lisp :tangle yes
-(use-package highlight-indent-guides
+  (use-package highlight-indent-guides
     :ensure t
     :hook (prog-mode . highlight-indent-guides-mode)
     :custom (highlight-indent-guides-method 'character)
@@ -289,7 +283,7 @@ Visually show the indentation levels.
 *** dtrt-indent
 Guess the identation rules from the style in the current file.
 #+begin_src emacs-lisp :tangle yes
-(use-package dtrt-indent
+  (use-package dtrt-indent
     :ensure t
     :hook (c-mode-common . dtrt-indent-mode)
     :custom (dtrt-indent-verbosity 0))
@@ -306,118 +300,114 @@ Close any syntactic element (=)]}= etc.)
 *** markdown mode
 
 #+begin_src emacs-lisp :tangle yes
-(use-package markdown-mode)
+  (use-package markdown-mode
+    :ensure t)
 #+end_src
 *** yaml mode
 
 #+begin_src emacs-lisp :tangle yes
-(use-package yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
+  (use-package yaml-mode
+    :ensure t
+    :config (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode)))
 #+end_src
 ** Visual customization
 *** solarized theme
 Use solarized dark theme
 #+begin_src emacs-lisp :tangle yes
-(use-package solarized-theme)
-(load-theme 'solarized-dark t)
+  (use-package solarized-theme
+    :ensure t
+    :config (load-theme 'solarized-dark t))
 #+end_src
 *** page break lines
 Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [
 and C-x ] to navigate back and forth.)
 
 #+begin_src emacs-lisp :tangle yes
-(use-package page-break-lines)
-(global-page-break-lines-mode)
+  (use-package page-break-lines
+    :ensure t
+    :config (global-page-break-lines-mode))
 #+end_src
 *** minions
 Just hide all minor modes
 
 #+begin_src emacs-lisp :tangle yes
-(use-package minions
+  (use-package minions
     :ensure t
     :custom (minions-direct '(projectile-mode))
     :config (minions-mode 1))
-#+end_src
-*** all the icons
-
-#+begin_src emacs-lisp :tangle yes
-(use-package all-the-icons
-    :disabled
-    :ensure t)
 #+end_src
 * Modes
 ** paren mode
 Highlight matching parenthesis
 
 #+begin_src emacs-lisp :tangle yes
-;; paren-mode
-(show-paren-mode 1)
-(setq show-paren-mode t)
-(setq show-paren-delay 0.5)
-(setq show-paren-style 'expression)
+  (show-paren-mode 1)
+  (setq show-paren-mode t)
+  (setq show-paren-delay 0.5)
+  (setq show-paren-style 'expression)
 #+end_src
 ** save place mode
 Remember the last cursor position in emacs.
 
 #+begin_src emacs-lisp :tangle yes
-(require 'saveplace)
-(save-place-mode 1)
+  (require 'saveplace)
+  (save-place-mode 1)
 #+end_src
 * General customization
 ** Custom file
 Use a custom file
 
 #+begin_src emacs-lisp :tangle yes
-(setq custom-file
-    (no-littering-expand-etc-file-name "custom.el"))
-(load-file custom-file)
+  (setq custom-file
+        (no-littering-expand-etc-file-name "custom.el"))
+  (load-file custom-file)
 #+end_src
 ** Keybindings
 
 #+begin_src emacs-lisp :tangle yes
-(global-unset-key (kbd "C-z")) ;; unset C-z (which is hidding emacs)
-(global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
+  (global-unset-key (kbd "C-z")) ;; unset C-z (which is hidding emacs)
+  (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
 #+end_src
 ** Visual
 *** Remove tool bar and menu bar
 #+begin_src emacs-lisp :tangle yes
-(tool-bar-mode 0)
-(menu-bar-mode 0)
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
 #+end_src
 *** Highlight line
 Highlight the current line
 #+begin_src emacs-lisp :tangle yes
-(global-hl-line-mode 1)
+  (global-hl-line-mode 1)
 #+end_src
 *** Replace sound bell by visual bell
 #+begin_src emacs-lisp :tangle yes
-(defun mode-line-visual-bell ()
-  (setq visible-bell nil)
-  (setq ring-bell-function 'mode-line-visual-bell--flash))
+  (defun mode-line-visual-bell ()
+    (setq visible-bell nil)
+    (setq ring-bell-function 'mode-line-visual-bell--flash))
 
-(defun mode-line-visual-bell--flash ()
-  (let ((frame (selected-frame)))
-    (invert-face 'header-line frame)
-    (invert-face 'header-line-highlight frame)
-    (invert-face 'mode-line frame)
-    (invert-face 'mode-line-inactive frame)
-    (run-with-timer
-     0.1 nil
-     #'(lambda (frame)
-         (invert-face 'header-line frame)
-         (invert-face 'header-line-highlight frame)
-         (invert-face 'mode-line frame)
-         (invert-face 'mode-line-inactive frame))
-     frame)))
-(mode-line-visual-bell)
+  (defun mode-line-visual-bell--flash ()
+    (let ((frame (selected-frame)))
+      (invert-face 'header-line frame)
+      (invert-face 'header-line-highlight frame)
+      (invert-face 'mode-line frame)
+      (invert-face 'mode-line-inactive frame)
+      (run-with-timer
+       0.1 nil
+       #'(lambda (frame)
+           (invert-face 'header-line frame)
+           (invert-face 'header-line-highlight frame)
+           (invert-face 'mode-line frame)
+           (invert-face 'mode-line-inactive frame))
+       frame)))
+  (mode-line-visual-bell)
 #+end_src
 *** No startup screen
 #+begin_src emacs-lisp :tangle yes
-(setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t)
 #+end_src
 *** Display column number in the mode line
 #+begin_src emacs-lisp :tangle yes
-(setq column-number-mode t)
+  (setq column-number-mode t)
 #+end_src
 *** New frame size
 #+begin_src emacs-lisp :tangle yes
@@ -426,23 +416,23 @@ Highlight the current line
 #+end_src
 ** Change "yes or no" to "y or n"
 #+begin_src emacs-lisp :tangle yes
-(fset 'yes-or-no-p 'y-or-n-p)
+  (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 ** Confirm kill Emacs
 #+begin_src emacs-lisp :tangle yes
-(setq confirm-kill-emacs 'y-or-n-p)
+  (setq confirm-kill-emacs 'y-or-n-p)
 #+end_src
 ** Encoding
 #+begin_src emacs-lisp :tangle yes
-(setq-default buffer-file-coding-system 'utf-8)
-(setenv "LANG" "en_fr.UTF-8")
-(prefer-coding-system 'utf-8)
+  (setq-default buffer-file-coding-system 'utf-8)
+  (setenv "LANG" "en_fr.UTF-8")
+  (prefer-coding-system 'utf-8)
 #+end_src
 ** Trailing whitespace
 Automatically remove trailing whitespace when saving a file.
 
 #+begin_src emacs-lisp :tangle yes
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 * Disabled stuff
 Stuff below is disabled (=:tangle no=).
@@ -450,25 +440,25 @@ Stuff below is disabled (=:tangle no=).
 File tree view
 
 #+begin_src emacs-lisp :tangle no
-(use-package treemacs)
-(use-package treemacs-projectile)
+  (use-package treemacs)
+  (use-package treemacs-projectile)
 #+end_src
 ** flycheck
 Syntax checking
 
 #+begin_src emacs-lisp :tangle no
-(use-package flycheck)
+  (use-package flycheck)
 #+end_src
 ** Java development
 
 #+begin_src emacs-lisp :tangle no
-(use-package lsp-mode)
-(use-package company-lsp)
-(push 'company-lsp company-backends)
-(use-package lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(use-package lsp-java :after lsp
-  :init
-  (setq lsp-java-save-action-organize-imports nil)
-  :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
+  (use-package lsp-mode)
+  (use-package company-lsp)
+  (push 'company-lsp company-backends)
+  (use-package lsp-ui)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (use-package lsp-java :after lsp
+    :init
+    (setq lsp-java-save-action-organize-imports nil)
+    :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
 #+end_src
