@@ -353,6 +353,22 @@ Remember the last cursor position in emacs.
   (require 'saveplace)
   (save-place-mode 1)
 #+end_src
+** tool bar mode and menu bar mode
+Disable both.
+#+begin_src emacs-lisp :tangle yes
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+#+end_src
+** global hl line mode
+Highlight the current line
+#+begin_src emacs-lisp :tangle yes
+  (global-hl-line-mode 1)
+#+end_src
+** column number mode
+Displays the column number in the mode line.
+#+begin_src emacs-lisp :tangle yes
+  (setq column-number-mode t)
+#+end_src
 * General customization
 ** Custom file
 Use a custom file
@@ -369,16 +385,6 @@ Use a custom file
   (global-set-key (kbd "C-x C-k k") 'kill-this-buffer)
 #+end_src
 ** Visual
-*** Remove tool bar and menu bar
-#+begin_src emacs-lisp :tangle yes
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-#+end_src
-*** Highlight line
-Highlight the current line
-#+begin_src emacs-lisp :tangle yes
-  (global-hl-line-mode 1)
-#+end_src
 *** Replace sound bell by visual bell
 #+begin_src emacs-lisp :tangle yes
   (defun mode-line-visual-bell ()
@@ -404,10 +410,6 @@ Highlight the current line
 *** No startup screen
 #+begin_src emacs-lisp :tangle yes
   (setq inhibit-startup-screen t)
-#+end_src
-*** Display column number in the mode line
-#+begin_src emacs-lisp :tangle yes
-  (setq column-number-mode t)
 #+end_src
 *** New frame size
 #+begin_src emacs-lisp :tangle yes
