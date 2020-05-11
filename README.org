@@ -328,6 +328,12 @@ Just hide all minor modes
     :config (minions-mode 1))
 #+end_src
 * Modes
+** auto revert mode
+Revert file changes when file changed on the filesystem (git, sync, etc.)
+
+#+begin_src emacs-lisp :tangle yes
+  (global-auto-revert-mode)
+#+end_src
 ** paren mode
 Highlight matching parenthesis
 
