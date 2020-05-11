@@ -27,21 +27,6 @@ open.
   (server-start)
   (add-hook 'server-switch-hook #'raise-frame)
 #+end_src
-* Variables
-#+begin_src emacs-lisp :tangle yes
-  (setq
-   make-backup-files nil;; no backup files - I use git everywhere
-   create-lockfiles nil;; will no create lock files
-   scroll-error-top-bottom t;;scroll to the farthest possible position before signaling an error
-   use-package-always-ensure t;;install package if not already present
-   sentence-end-double-space nil;;end of sentence period should not be followed by two spaces
-   )
-
-  (setq-default
-   indent-tabs-mode nil;;don't use tabs for indentation
-   tab-width 4;;one tab = 4 spaces
-   c-basic-offset 4);;basic indentation in Cc Mode
-#+end_src
 * Package initialization
 ** Add package sources
 Additional repositories for packages.
@@ -49,15 +34,21 @@ Additional repositories for packages.
 #+begin_src emacs-lisp :tangle yes
   (require 'package)
   (setq
-   package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                      ("org" . "http://orgmode.org/elpa/")
-                      ("melpa" . "http://melpa.org/packages/")
-                      ("melpa-stable" . "http://stable.melpa.org/packages/"))
+   package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                      ("org" . "https://orgmode.org/elpa/")
+                      ("melpa" . "https://melpa.org/packages/")
+                      ("melpa-stable" . "https://stable.melpa.org/packages/"))
    package-archive-priorities '(("melpa-stable" . 1)))
 
   (unless (and (boundp 'package-archive-contents) package-archive-contents)
     (package-initialize)
     (package-refresh-contents))
+#+end_src
+** Always ensure
+Ensure installs package if not already present.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq use-package-always-ensure t)
 #+end_src
 * Packages
 ** Misc
@@ -378,6 +369,21 @@ Use a custom file
         (no-littering-expand-etc-file-name "custom.el"))
   (load-file custom-file)
 #+end_src
+** No backup files, no lock files
+I use git everywhere
+
+#+begin_src emacs-lisp :tangle yes
+  (setq
+   make-backup-files nil
+   create-lockfiles nil)
+#+end_src
+** Scroll
+Scroll to the farthest possible position before signaling an error
+(beeep/flash).
+
+#+begin_src emacs-lisp :tangle yes
+  (setq scroll-error-top-bottom t)
+#+end_src
 ** Keybindings
 
 #+begin_src emacs-lisp :tangle yes
@@ -423,6 +429,22 @@ Use a custom file
 ** Confirm kill Emacs
 #+begin_src emacs-lisp :tangle yes
   (setq confirm-kill-emacs 'y-or-n-p)
+#+end_src
+** Single space at end of sentence
+End of sentence period should not be followed by two spaces.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq sentence-end-double-space nil)
+#+end_src
+** No tabs indent
++ =indent-tabs-mode= :: whether or not to use tabs for indentation
+
++ =tab-width= :: number of spaces in a tab
+
+#+begin_src emacs-lisp :tangle yes
+  (setq-default
+   indent-tabs-mode nil
+   tab-width 4)
 #+end_src
 ** Encoding
 #+begin_src emacs-lisp :tangle yes
