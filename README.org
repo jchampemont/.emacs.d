@@ -360,6 +360,10 @@ Displays the column number in the mode line.
 #+begin_src emacs-lisp :tangle yes
   (setq column-number-mode t)
 #+end_src
+** global display line numbers mode
+#+begin_src emacs-lisp :tangle yes
+  (global-display-line-numbers-mode)
+#+end_src
 * General customization
 ** Custom file
 Use a custom file
