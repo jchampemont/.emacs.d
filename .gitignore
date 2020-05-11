@@ -10,6 +10,9 @@ README.el
 # variable files
 var/
 
+# secrets files
+etc/secrets.el
+
 # other
 /auto-save-list
 etc/custom.el

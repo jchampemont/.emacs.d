@@ -260,7 +260,8 @@ location.
 #+begin_src emacs-lisp :tangle yes
   (use-package git-link
     :ensure t
-    :custom (git-link-use-commit nil))
+    :custom (git-link-use-commit nil)
+            (git-link-open-in-browser t))
 #+end_src
 *** highlight-indent-guides
 Visually show the indentation levels.
@@ -371,6 +372,18 @@ Displays the column number in the mode line.
   (global-display-line-numbers-mode)
 #+end_src
 * General customization
+** Personal information
+
+#+begin_src emacs-lisp :tangle yes
+  (setq user-full-name "Jean Champémont"
+        user-mail-address "emacs@jeanchampemont.com")
+#+end_src
+** Load secrets
+Sensitive information are kept in a separate file.
+
+#+begin_src emacs-lisp :tangle yes
+  (load-file "~/.emacs.d/etc/secrets.el")
+#+end_src
 ** Custom file
 Use a custom file
 
@@ -378,6 +391,14 @@ Use a custom file
   (setq custom-file
         (no-littering-expand-etc-file-name "custom.el"))
   (load-file custom-file)
+#+end_src
+** Reload
+Function to reload configuration more easily
+
+#+begin_src emacs-lisp :tangle yes
+  (defun reload-emacs-configuration ()
+    (interactive)
+    (load-file "~/.emacs.d/init.el"))
 #+end_src
 ** No backup files, no lock files
 I use git everywhere
