@@ -368,9 +368,15 @@ Displays the column number in the mode line.
   (setq column-number-mode t)
 #+end_src
 ** global display line numbers mode
+Display line numbers on the left hand side except when using
+org-mode or shell modes.
 #+begin_src emacs-lisp :tangle yes
   (global-display-line-numbers-mode)
-#+end_src
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+ #+end_src
 * General customization
 ** Personal information
 
