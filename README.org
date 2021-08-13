@@ -214,7 +214,10 @@ Project interaction library
              (projectile-completion-system 'ivy)
              (projectile-enable-idle-timer nil)
              (projectile-mode-line-prefix ""))
-    :config (projectile-global-mode))
+    :config (projectile-global-mode)
+    :init
+    (when (file-directory-p "~/git")
+      (setq projectile-project-search-path '("~/git"))))
 #+end_src
 *** company mode
 Comp(lete) any(thing) is a completion engine.
