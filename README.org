@@ -186,7 +186,8 @@ The built-in org-mode in Emacs is outdated, install a newer one.
     :hook ((org-mode . auto-fill-mode)
            (org-mode . flyspell-mode)
            (org-mode . (lambda () (setq fill-column 80)))
-           (org-mode . turn-on-auto-fill))
+           (org-mode . turn-on-auto-fill)
+           (org-mode . (lambda () (require 'org-tempo))))
     :bind (:map global-map
                 ("C-c a" . org-agenda))
           (:map global-map
@@ -198,7 +199,7 @@ The built-in org-mode in Emacs is outdated, install a newer one.
              (org-archive-location "archive/$s::")
              (org-archive-mark-done t)
              (org-M-RET-may-split-line '((item . nil)))
-         (org-cycle-separator-lines 0))
+             (org-cycle-separator-lines 0))
   (org-reload)
 #+End_src
 ** Programming
