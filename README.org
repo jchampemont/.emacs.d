@@ -194,9 +194,11 @@ The built-in org-mode in Emacs is outdated, install a newer one.
                 ("C-c l" . org-store-link))
           (:map org-mode-map
                 ("C-c C-l" . org-insert-link))
+          (:map org-mode-map
+                ("C-c C-SPC" . org-insert-heading-after-current))
     :custom  (org-log-done t)
              (org-startup-indented t)
-             (org-archive-location "archive/$s::")
+             (org-archive-location (concat "archive/" (format-time-string "%Y" (current-time)) "_%s::"))
              (org-archive-mark-done t)
              (org-M-RET-may-split-line '((item . nil)))
              (org-cycle-separator-lines 0))
