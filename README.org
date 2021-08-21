@@ -295,7 +295,7 @@ Close any syntactic element (=)]}= etc.)
 #+begin_src emacs-lisp :tangle yes
   (use-package syntactic-close
     :ensure t
-    :bind (("]" . syntactic-close)))
+    :bind (("C-]" . syntactic-close)))
 #+end_src
 ** Syntax
 *** markdown mode
