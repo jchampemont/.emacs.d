@@ -93,6 +93,7 @@ Ivy is a command completion engine.
   (use-package ivy
     :ensure t
     :custom (ivy-use-virtual-buffers t)
+            (ivy-use-selectable-prompt t)
             (enable-recursive-minibuffers t)
             (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
     :config (ivy-mode 1))
@@ -201,7 +202,7 @@ The built-in org-mode in Emacs is outdated, install a newer one.
              (org-startup-indented t)
              (org-archive-location (concat "archive/" (format-time-string "%Y" (current-time)) "_%s::"))
              (org-archive-mark-done t)
-             (org-agenda-files '("~/org/pro/misc.org" "~/org/perso/misc.org"))
+             (org-agenda-files '("~/org/tasks.org"))
              (org-M-RET-may-split-line '((item . nil)))
              (org-cycle-separator-lines 0))
   (org-reload)
