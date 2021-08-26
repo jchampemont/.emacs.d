@@ -215,7 +215,7 @@ The built-in org-mode in Emacs is outdated, install a newer one.
                (org-startup-indented t)
                (org-archive-location (concat "archive/" (format-time-string "%Y" (current-time)) "_%s::"))
                (org-archive-mark-done t)
-               (org-agenda-files '("~/org/tasks.org"))
+               (org-agenda-files '("~/org/tasks.org" "~/org/habits.org"))
                (org-M-RET-may-split-line '((item . nil)))
                (org-cycle-separator-lines 0)
                (org-blank-before-new-entry '(('heading . nil) ('plain-list-item . auto))))
