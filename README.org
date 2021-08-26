@@ -36,8 +36,7 @@ Additional repositories for packages.
   (setq
    package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                       ("org" . "https://orgmode.org/elpa/")
-                      ("melpa" . "https://melpa.org/packages/"))
-   package-archive-priorities '(("melpa-stable" . 1)))
+                      ("melpa" . "https://melpa.org/packages/")))
 
   (unless (and (boundp 'package-archive-contents) package-archive-contents)
     (package-initialize)
@@ -169,12 +168,21 @@ Correcting words with flyspell using ivy interface.
 *** Basic
 The built-in org-mode in Emacs is outdated, install a newer one.
 
++ =org-ellipsis= :: Character to use at the end of a collapsed heading when
+  there is content underneath (instead of ...).
+
++ =org-log-done= :: When marking a task as tome, logs the completion time.
+
++ =org-log-into-drawer= :: Log times and notes in a drawer.
+
 + =org-startup-indented= :: Activate =org-indent-mode= at buffer startup.
 
 + =org-archive-location= :: Archive items end up in the same file in the
-  =archive/= subdir.
+  =archive/= subdir prefixed with the current year.
 
 + =org-archive-mark-done= :: Mark the item as done when it is archived.
+
++ =org-agenda-files= :: File to use to fill up the agenda
 
 + =org-M-RET-may-split-line= :: When pressing =M-RET= do not split the text at
   point, but add an item after the current one.
@@ -182,37 +190,58 @@ The built-in org-mode in Emacs is outdated, install a newer one.
 + =org-cycle-separator-lines= :: Make collapsed trees more compact by showing no
   empty lines in between.
 
++ =org-blank-before-new-entry= :: Whether or not to add a blank line before new
+  entries, depending on their types (heading or plain-list-item).
+
 #+begin_src emacs-lisp :tangle yes
-  (use-package org
-    :ensure org-plus-contrib
-    :hook ((org-mode . auto-fill-mode)
-           (org-mode . flyspell-mode)
-           (org-mode . (lambda () (setq fill-column 80)))
-           (org-mode . turn-on-auto-fill)
-           (org-mode . (lambda () (require 'org-tempo))))
-    :bind (:map global-map
-                ("C-c a" . org-agenda))
-          (:map global-map
-                ("C-c l" . org-store-link))
-          (:map org-mode-map
-                ("C-c C-l" . org-insert-link))
-          (:map org-mode-map
-                ("C-c C-SPC" . org-insert-heading-after-current))
-    :custom  (org-ellipsis " ▾")
-             (org-log-done 'time)
-             (org-log-into-drawer t)
-             (org-startup-indented t)
-             (org-archive-location (concat "archive/" (format-time-string "%Y" (current-time)) "_%s::"))
-             (org-archive-mark-done t)
-             (org-agenda-files '("~/org/tasks.org"))
-             (org-M-RET-may-split-line '((item . nil)))
-             (org-cycle-separator-lines 0))
+    (use-package org
+      :ensure org-plus-contrib
+      :hook ((org-mode . auto-fill-mode)
+             (org-mode . flyspell-mode)
+             (org-mode . (lambda () (setq fill-column 80)))
+             (org-mode . turn-on-auto-fill)
+             (org-mode . (lambda () (require 'org-tempo))))
+      :bind (:map global-map
+                  ("C-c a" . org-agenda))
+            (:map global-map
+                  ("C-c l" . org-store-link))
+            (:map org-mode-map
+                  ("C-c C-l" . org-insert-link))
+            (:map org-mode-map
+                  ("C-c C-SPC" . org-insert-heading-after-current))
+      :custom  (org-ellipsis " ▾")
+               (org-log-done 'time)
+               (org-log-into-drawer t)
+               (org-startup-indented t)
+               (org-archive-location (concat "archive/" (format-time-string "%Y" (current-time)) "_%s::"))
+               (org-archive-mark-done t)
+               (org-agenda-files '("~/org/tasks.org"))
+               (org-M-RET-may-split-line '((item . nil)))
+               (org-cycle-separator-lines 0)
+               (org-blank-before-new-entry '(('heading . nil) ('plain-list-item . auto))))
 #+end_src
 *** Visual customization
 **** Bullets
+Use UTF-8 bullets instead of plain old stars.
 #+begin_src emacs-lisp :tangle yes
   (use-package org-bullets)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+*** Capture templates
+Simple capture templates to begin with: journal and todos.
+#+begin_src emacs-lisp :tangle yes
+  (setq org-capture-templates '(
+    ("j" "Journal" entry
+      (file+olp+datetree "~/org/journal.org")
+      "* %?\n")
+    ("t" "Todo")
+    ("tt" "Todo" entry
+      (file+headline "~/org/tasks.org" "Inbox")
+      "* TODO %?")
+    ("tc" "Todo with Context" entry
+      (file+headline "~/org/tasks.org" "Inbox")
+      "* TODO %?\n %i\n %a")
+  ))
 #+end_src
 *** Reload org
 Finally let's reload org with all the customization.
@@ -251,6 +280,8 @@ Displays file summary
 
 #+begin_src emacs-lisp :tangle yes
   (use-package popup-imenu
+    :bind (:map global-map
+                ("C-c o" . popup-imenu))
     :ensure t)
 #+end_src
 *** magit
@@ -327,12 +358,12 @@ Close any syntactic element (=)]}= etc.)
     :config (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode)))
 #+end_src
 ** Visual customization
-*** solarized theme
-Use solarized dark theme
+*** monokai theme
+Use monokai theme temporarily (solarized is broken)
 #+begin_src emacs-lisp :tangle yes
-  (use-package solarized-theme
+  (use-package monokai-theme
     :ensure t
-    :config (load-theme 'solarized-dark t))
+    :config (load-theme 'monokai t))
 #+end_src
 *** page break lines
 Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [
@@ -555,4 +586,11 @@ Syntax checking
     :init
     (setq lsp-java-save-action-organize-imports nil)
     :config (add-hook 'java-mode-hook 'lsp) (add-hook 'java-mode-hook 'flycheck-mode))
+#+end_src
+** solarized theme
+Use solarized dark theme
+#+begin_src emacs-lisp :tangle no
+  (use-package solarized-theme
+    :ensure t
+    :config (load-theme 'solarized-light t))
 #+end_src
