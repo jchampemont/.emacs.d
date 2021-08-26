@@ -211,8 +211,8 @@ The built-in org-mode in Emacs is outdated, install a newer one.
 *** Visual customization
 **** Bullets
 #+begin_src emacs-lisp :tangle yes
-  (use-package org-superstar)
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+  (use-package org-bullets)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
 *** Reload org
 Finally let's reload org with all the customization.
