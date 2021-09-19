@@ -41,6 +41,8 @@ Additional repositories for packages.
   (unless (and (boundp 'package-archive-contents) package-archive-contents)
     (package-initialize)
     (package-refresh-contents))
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
 #+end_src
 ** Always ensure
 Ensure installs package if not already present.
