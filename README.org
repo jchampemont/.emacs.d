@@ -361,11 +361,11 @@ Close any syntactic element (=)]}= etc.)
 #+end_src
 ** Visual customization
 *** monokai theme
-Use monokai theme temporarily (solarized is broken)
+Use solarized theme
 #+begin_src emacs-lisp :tangle yes
-  (use-package monokai-theme
+  (use-package solarized-theme
     :ensure t
-    :config (load-theme 'monokai t))
+    :config (load-theme 'solarized-dark t))
 #+end_src
 *** page break lines
 Displays horizontal lines instead of ^L (C-q C-l to insert such a line ; C-x [
